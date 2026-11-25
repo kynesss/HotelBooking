@@ -1,0 +1,7 @@
+﻿services:
+  hotelbooking.api:
+    image: hotelbooking.api
+    build:
+      context: .
+      dockerfile: src/API/HotelBooking.Api/Dockerfile
+
