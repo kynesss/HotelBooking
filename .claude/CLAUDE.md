@@ -59,6 +59,35 @@ Each business module contains four projects:
 - Avoid unnecessary abstractions and premature optimization.
 - Do not introduce new dependencies or architectural patterns without approval.
 
+## Code Consistency
+
+- Write new code the same way existing code in the project is written. Before adding code, read the closest existing equivalent and follow its structure, naming, and style.
+- Follow these established conventions:
+  - File-scoped namespaces that match the folder structure.
+  - Domain and persistence types grouped by feature folder (e.g. `Users/`); database-wide types in `Database/`.
+  - Entities inherit from `Entity`, expose properties with private setters, and record domain events with `Raise`.
+  - Each module has its own `DbContext`, schema constant in `Schemas`, and `IEntityTypeConfiguration<T>` classes. Database names use snake_case.
+  - Module registration lives in `<Module>Module` in Infrastructure (`Add<Module>Module`), using C# `extension` blocks.
+  - Shared registration lives in `AddApplication` and `AddInfrastructure` in the Common projects.
+  - Primary constructors for dependency injection.
+  - Classes not used outside their project are `internal`; mark classes `sealed` when they are not designed for inheritance.
+- If existing code conflicts with these rules or is inconsistent, point it out and ask instead of silently introducing another style.
+
+## Result Pattern
+
+- Use `Result` and `Result<TValue>` from `HotelBooking.Common.Domain` for operations that can fail for expected business or validation reasons.
+- Do not throw exceptions for expected failures. Reserve exceptions for unexpected or programming errors.
+- Describe failures with `Error` and its factory methods (`Failure`, `NotFound`, `Problem`, `Conflict`); use `ValidationError` for validation failures.
+- Use stable, descriptive error codes in the `<Feature>.<Reason>` format (e.g. `Users.NotFound`).
+- Check `IsFailure` before accessing `Value`, and propagate errors to the caller.
+- Endpoints translate failed results into appropriate HTTP responses based on `ErrorType`.
+
+## HTTP Endpoints
+
+- Use Minimal APIs. Do not add MVC controllers, `AddControllers`, or `MapControllers`.
+- Define endpoints in the module's Presentation project, not in `Program.cs`.
+- Endpoints only map the request, send a command or query through MediatR, and map the `Result` to a response.
+
 ## Development Workflow
 
 - Analyze the existing code before making changes.
