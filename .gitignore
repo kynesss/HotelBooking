@@ -9,6 +9,12 @@
 *.sln.docstates
 *.env
 
+# Local environment variables
+.env
+
+# Local container data (database volumes)
+.containers/
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 

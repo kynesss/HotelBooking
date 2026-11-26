@@ -1,7 +1,21 @@
 ﻿services:
   hotelbooking.api:
     image: hotelbooking.api
+    container_name: HotelBooking.Api
     build:
       context: .
       dockerfile: src/API/HotelBooking.Api/Dockerfile
+    ports:
+      - 5000:8080
 
+  hotelbooking.database:
+    image: postgres:17
+    container_name: HotelBooking.Database
+    environment:
+      - POSTGRES_DB=hotelbooking
+      - POSTGRES_USER=${POSTGRES_USER:?POSTGRES_USER is not set, see .env.example}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is not set, see .env.example}
+    volumes:
+      - ./.containers/db:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
