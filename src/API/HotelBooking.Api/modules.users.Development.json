@@ -1,0 +1,9 @@
+{
+  "Users": {
+    "KeyCloak": {
+      "AdminUrl": "http://hotelbooking.identity:8080/admin/realms/hotelbooking/",
+      "TokenUrl": "http://hotelbooking.identity:8080/realms/hotelbooking/protocol/openid-connect/token",
+      "ConfidentialClientId": "hotelbooking-confidential-client"
+    }
+  }
+}

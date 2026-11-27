@@ -1,9 +1,13 @@
-﻿using HotelBooking.Common.Domain;
+using HotelBooking.Common.Domain;
 
 namespace HotelBooking.Modules.Users.Domain.Users;
 
-public class User : Entity
+public sealed class User : Entity
 {
+    private User()
+    {
+    }
+
     public Guid Id { get; private set; }
 
     public string Email { get; private set; }
@@ -13,4 +17,20 @@ public class User : Entity
     public string LastName { get; private set; }
 
     public string IdentityId { get; private set; }
+
+    public static User Create(string email, string firstName, string lastName, string identityId)
+    {
+        var user = new User
+        {
+            Id = Guid.CreateVersion7(),
+            Email = email,
+            FirstName = firstName,
+            LastName = lastName,
+            IdentityId = identityId
+        };
+
+        user.Raise(new UserRegisteredDomainEvent(user.Id));
+
+        return user;
+    }
 }

@@ -1,4 +1,5 @@
-﻿using HotelBooking.Common.Infrastructure.Interceptors;
+using HotelBooking.Common.Infrastructure.Authentication;
+using HotelBooking.Common.Infrastructure.Interceptors;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Npgsql;
@@ -7,13 +8,18 @@ namespace HotelBooking.Common.Infrastructure;
 
 public static class InfrastructureConfiguration
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services, string databaseConnectionString)
+    extension(IServiceCollection services)
     {
-        var npgsqlDataSource = new NpgsqlDataSourceBuilder(databaseConnectionString).Build();
-        services.TryAddSingleton(npgsqlDataSource);
-        
-        services.TryAddSingleton<PublishDomainEventsInterceptor>();
-        
-        return services;
+        public IServiceCollection AddInfrastructure(string databaseConnectionString)
+        {
+            services.AddAuthenticationInternal();
+
+            var npgsqlDataSource = new NpgsqlDataSourceBuilder(databaseConnectionString).Build();
+            services.TryAddSingleton(npgsqlDataSource);
+
+            services.TryAddSingleton<PublishDomainEventsInterceptor>();
+
+            return services;
+        }
     }
 }

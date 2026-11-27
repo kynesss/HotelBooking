@@ -1,17 +1,26 @@
-﻿using System.Reflection;
+using System.Reflection;
+using FluentValidation;
+using HotelBooking.Common.Application.Behaviors;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace HotelBooking.Common.Application;
 
 public static class ApplicationConfiguration
 {
-    public static IServiceCollection AddApplication(this IServiceCollection services, Assembly[] moduleAssemblies)
+    extension(IServiceCollection services)
     {
-        services.AddMediatR(config =>
+        public IServiceCollection AddApplication(Assembly[] moduleAssemblies)
         {
-            config.RegisterServicesFromAssemblies(moduleAssemblies);
-        });
+            services.AddMediatR(config =>
+            {
+                config.RegisterServicesFromAssemblies(moduleAssemblies);
 
-        return services;
+                config.AddOpenBehavior(typeof(ValidationPipelineBehavior<,>));
+            });
+
+            services.AddValidatorsFromAssemblies(moduleAssemblies, includeInternalTypes: true);
+
+            return services;
+        }
     }
 }

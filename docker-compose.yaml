@@ -7,6 +7,7 @@
       dockerfile: src/API/HotelBooking.Api/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - Users__KeyCloak__ConfidentialClientSecret=${KEYCLOAK_CONFIDENTIAL_CLIENT_SECRET:?}
     ports:
       - 5000:8080
 
@@ -14,10 +15,25 @@
     image: postgres:17
     container_name: HotelBooking.Database
     environment:
-      - POSTGRES_DB=hotelbooking
-      - POSTGRES_USER=${POSTGRES_USER:?POSTGRES_USER is not set, see .env.example}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is not set, see .env.example}
+      - POSTGRES_DB=${POSTGRES_DB:?}
+      - POSTGRES_USER=${POSTGRES_USER:?}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?}
     volumes:
       - ./.containers/db:/var/lib/postgresql/data
     ports:
       - 5432:5432
+    
+  hotelbooking.identity:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: HotelBooking.Identity
+    command: start-dev #--import-realm
+    environment:
+      - KC_HEALTH_ENABLED=${KC_HEALTH_ENABLED:?}
+      - KC_BOOTSTRAP_ADMIN_USERNAME=${KC_BOOTSTRAP_ADMIN_USERNAME:?}
+      - KC_BOOTSTRAP_ADMIN_PASSWORD=${KC_BOOTSTRAP_ADMIN_PASSWORD:?}
+    volumes:
+      - ./.containers/identity:/opt/keycloak/data
+      - ./.files:/opt/keycloak/data/import
+    ports:
+      - 18080:8080
+      - 9000:9000 # if you want to expose health check locally

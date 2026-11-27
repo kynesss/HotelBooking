@@ -5,6 +5,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <NoWarn>$(NoWarn);CA1515</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
@@ -13,6 +14,7 @@
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
           <PrivateAssets>all</PrivateAssets>
         </PackageReference>
+        <PackageReference Include="Scalar.AspNetCore" Version="3.3.0" />
     </ItemGroup>
 
     <ItemGroup>
