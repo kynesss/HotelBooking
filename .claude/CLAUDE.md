@@ -51,6 +51,16 @@ Each business module contains four projects:
 - Follow existing `.editorconfig` and `Directory.Build.props` settings.
 - Use `var` for local variable declarations.
 - Prefer clear, descriptive names.
+- Prefer modern C# language features over legacy equivalents, e.g. `extension` blocks instead of `this`-parameter extension methods. Use one `extension` block per static class.
+- Never add comments to code (including XML documentation comments). Make the code self-explanatory instead.
+- Do not introduce constants for validation limits (e.g. maximum or minimum lengths); write the literals directly in validators and EF Core configurations.
+- Wherever possible, use the most restrictive and explicit types and keywords:
+  - `internal` instead of `public` for anything not used outside its project, and `private` for members not used outside their type.
+  - `sealed` for every class and record not designed for inheritance.
+  - `static` for classes and methods that do not use instance state. Do not add `static` to lambdas (write `sp => ...`, not `static sp => ...`).
+  - `readonly` for fields and structs that do not change, and `const` for compile-time constants.
+  - `init` or `private set` instead of public setters, and `required` for properties that must be initialized.
+  - `record` for immutable data carriers such as commands, requests, and DTOs.
 - Keep business logic inside the domain where appropriate.
 - Keep endpoints thin.
 - Organize application features by use case.
@@ -87,6 +97,9 @@ Each business module contains four projects:
 - Use Minimal APIs. Do not add MVC controllers, `AddControllers`, or `MapControllers`.
 - Define endpoints in the module's Presentation project, not in `Program.cs`.
 - Endpoints only map the request, send a command or query through MediatR, and map the `Result` to a response.
+- Group endpoints by module: tag every endpoint with its module name using the module's `Tags` class (`.WithTags`).
+- Document every endpoint with `.WithName`, `.WithSummary`, `.WithDescription`, and its possible responses (`.Produces`, `.ProducesProblem`).
+- Keep summaries and descriptions concise, in English. Do not repeat what can already be read from the model (fields, types, constraints).
 
 ## Development Workflow
 
