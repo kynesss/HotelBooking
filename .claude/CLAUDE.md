@@ -112,6 +112,22 @@ Each business module contains four projects:
 - Run relevant builds and tests after implementation.
 - Do not create commits or push changes unless explicitly requested.
 
+## Knowledge Graph
+
+A graphify knowledge graph of the project lives in `graphify-out/`. Use it to save tokens.
+
+- When `graphify-out/graph.json` exists, query the graph before searching or reading files broadly, e.g. for architecture, relationships, call flows, or impact analysis:
+  - `graphify query "<question>"` — context for a question.
+  - `graphify explain "<concept>"` — a node and its neighbors.
+  - `graphify path "<A>" "<B>"` — how two concepts are connected.
+  - `graphify affected "<node>"` — what a change may impact.
+- Then read only the files the graph points to. Always read a file before editing it.
+- A plain text search is fine for a single targeted lookup.
+- The graph may lag behind the code. When it disagrees with the source files, trust the source files.
+- After completing every major feature (e.g. a new module, use case, or significant refactor), update the graph before reporting the task as done:
+  - `graphify update .` — code changes (no LLM cost); add `--force` after removing code.
+  - `/graphify . --update` — when documentation files changed as well.
+
 ## Learning Objectives
 
 This project is also a learning environment for the developer.
